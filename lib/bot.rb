@@ -26,12 +26,12 @@ class Bot
             key = key.split(/(?=[A-Z])/).join(' ')
             text_output += "#{key}: #{value}\n"
           end
-          bot.api.send_message(chat_id: message.chat.id, text: text_output)
+          bot.api.send_message(chat_id: message.chat.id, text: text_output)          
           
-          countries_hash = covid_api.countries
-          p countries_hash
+          # countries_array = covid_api.countries
+          # bot.api.send_message(chat_id: message.chat.id, text: "Please type one of the following countries to get information: \n#{countries_array.join(', ')}",)
 
-          bot.api.send_message(chat_id: message.chat.id, text: "Please type one of the following countries to get information: ")
+
         end
       end
     end
