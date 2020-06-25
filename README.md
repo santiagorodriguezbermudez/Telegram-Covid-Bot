@@ -37,4 +37,5 @@ Give a ⭐️ if you like this project!
 
 ## 📝 License
 
+Bot Icon by virus by Arya Icons from the Noun Project
 This project is [MIT](lic.url) licensed.
