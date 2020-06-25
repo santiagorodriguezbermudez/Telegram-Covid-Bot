@@ -20,6 +20,23 @@ class CovidApi
     country_array.sort
   end
 
+  def country(country)
+    country_array = get_information('summary') {|hash| hash['Countries']}
+    selected_country = country_array.select {|object| object['Country'] == country}
+    selected_country_fields = selected_country[0].select {|k, v| (k != "Date" && k != "CountryCode" && k != "Slug")}
+    selected_country_fields
+    # selected_country_fields = {}
+    # selected_country_fields[:NewConfirmed] = selected_country[0]["NewConfirmed"]
+    # selected_country_fields[:TotalConfirmed] = selected_country[0]["TotalConfirmed"]
+    # selected_country_fields[:NewDeaths] = selected_country[0]["NewDeaths"]
+    # selected_country_fields[:TotalDeaths] = selected_country[0]["TotalDeaths"]
+    # selected_country_fields[:NewRecovered] = selected_country[0]["NewRecovered"]
+    # selected_country_fields[:TotalRecovered] = selected_country[0]["TotalRecovered"]
+    # selected_country_fields[:Date] = selected_country[0]["Date"]
+    # selected_country_fields
+  end
+
+
   private 
 
   def get_information(path)
