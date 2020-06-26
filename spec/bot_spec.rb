@@ -1,29 +1,19 @@
-# require_relative '../lib/bot'
-# require_relative '../lib/covid_api'
-# require 'geocoder'
-# require 'dotenv'
+require_relative '../lib/bot.rb'
 
-# Dotenv.load
+describe Bot do
+  let(:bot) { Bot.new }
 
-# describe Bot do
-#   p 'starts?'
-#   let(:bot) {Bot.new(ENV['token'])}
-#   p 'continues?'
-#   let (:array_slug) { [] }
+  describe '#initialize' do  
+    it 'Starts the Bot without error' do
+      expect(bot.class).to eql (Bot)
+    end
+  end
 
-#   describe '#search' do 
+  describe '#reply' do    
+    it 'Returns Hash for Telegram Server to read' do
+      result = bot.text_reply
+      expect(result.class).to eql (Hash)
+    end
+  end
 
-#     it 'Returns a succesful search given a location for a country with a compound name' do
-#       p bot
-#       array_slug = bot.search('countries').split(', ')
-#       p array_slug
-#       array_slug.each do |slug|
-#         slug = slug.split('-').map{|w| w.capitalize}.join(' ')
-#         p slug
-#         location = Geocoder.search(slug)
-#         p location.first.country  
-#         expect(bot.search('location', location).class).to eql(String)
-#       end
-#     end
-#   end
-# end
+end

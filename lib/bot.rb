@@ -5,8 +5,8 @@ require_relative 'covid_api'
 class Bot
   attr_reader :commands, :token
 
-  def initialize(token) 
-    @token = token
+  def initialize 
+    @token = ENV['token']
     start_telegram_api
   end
 
