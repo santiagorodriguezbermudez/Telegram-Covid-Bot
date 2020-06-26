@@ -41,7 +41,7 @@ class Bot
           reply(bot, message.chat.id, "Bye, #{message.from.first_name}.")
 
         else
-          if search('country').include? message.text.capitalize
+          if search('country').include? message.text.downcase
             reply(bot, message.chat.id, search(message.text))
           else
             reply(bot, message.chat.id, "I can't help you, please select from the following options:", main_menu)
@@ -82,7 +82,7 @@ class Bot
 
     when 'location'
       if location
-        return covid_api.country(location.first.country)
+        return covid_api.country(location.first.country.downcase)
       end
     else
       covid_api.country(command)

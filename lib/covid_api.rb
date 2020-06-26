@@ -16,7 +16,7 @@ class CovidApi
   end
 
   def countries
-    country_array = get_information('countries') {|array| array.map {|el| el['Country']}}
+    country_array = get_information('countries') {|array| array.map {|el| el['Slug']}}
     country_array.sort
   end
 
