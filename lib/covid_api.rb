@@ -21,10 +21,10 @@ class CovidApi
   end
 
   def country(country)
-    country_array = get_information('summary') {|hash| hash['Countries']}
-    selected_country = country_array.select {|object| object['Country'].include? country.capitalize}
-    if selected_country != []
-      selected_country_fields = selected_country[0].select {|k, v| (k != "Date" && k != "CountryCode" && k != "Slug")}
+    country_array = get_information('total/country/' + country) {|array| array[(array.length)-1]}
+    
+    if country_array
+      selected_country_fields = country_array.select {|k, v| (k == 'Confirmed' || k == 'Country' || k == 'Deaths' || k == 'Recovered' || k == 'Active')}
       text_output = "Country: #{selected_country_fields['Country']}\n"
       selected_country_fields = selected_country_fields.select {|k, v| (k != 'Country')}
       text_output += organize_output(selected_country_fields) 
