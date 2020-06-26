@@ -12,7 +12,7 @@ class CovidApi
   public
 
   def summary
-    get_information('summary') {|hash| hash['Global']}
+    organize_output(get_information('summary') {|hash| hash['Global']})
   end
 
   def countries
@@ -22,9 +22,15 @@ class CovidApi
 
   def country(country)
     country_array = get_information('summary') {|hash| hash['Countries']}
-    selected_country = country_array.select {|object| object['Country'] == country}
-    selected_country_fields = selected_country[0].select {|k, v| (k != "Date" && k != "CountryCode" && k != "Slug")}
-    selected_country_fields
+    selected_country = country_array.select {|object| object['Country'].include? country.capitalize}
+    if selected_country != []
+      selected_country_fields = selected_country[0].select {|k, v| (k != "Date" && k != "CountryCode" && k != "Slug")}
+      text_output = "Country: #{selected_country_fields['Country']}\n"
+      selected_country_fields = selected_country_fields.select {|k, v| (k != 'Country')}
+      text_output += organize_output(selected_country_fields) 
+    else
+      organize_output(nil)
+    end
   end
 
 
@@ -40,6 +46,18 @@ class CovidApi
     summary_hash = JSON.parse(response.read_body)
 
     yield(summary_hash)
+  end
+
+  def organize_output(object)
+    return 'Error finding data...' unless object
+    
+    text_output = ''
+    object.each do |key, value| 
+      value = value.to_s.reverse.scan(/\d{1,3}/).join(',').reverse
+      key = key.split(/(?=[A-Z])/).join(' ')
+      text_output += "#{key}: #{value}\n"
+    end
+    text_output
   end
 
 end

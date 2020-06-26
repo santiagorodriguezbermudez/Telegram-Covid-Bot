@@ -24,7 +24,7 @@ class Bot
     bot.listen do |message|
       case message
       when Telegram::Bot::Types::Message
-        
+
         case message.text
         when '/start'
           reply(bot, message.chat.id, "Hello, #{message.from.first_name}.")
@@ -32,13 +32,18 @@ class Bot
           reply(bot, message.chat.id, search('/start'))
           reply(bot, message.chat.id, 'Please select one of the following options', main_menu)
 
-        else
-          reply(bot, message.chat.id, "I can't help you, please select from the following options:", main_menu)
-        end
+        when nil
+          # Provides stats according to the country if given a location. 
+          location = Geocoder.search([message.location.latitude, message.location.longitude]) if message.location
+          reply(bot, message.chat.id, search('location', location)) if message.location
 
-        # Provides stats according to the country if given a location. 
-        location = Geocoder.search([message.location.latitude, message.location.longitude]) if message.location
-        reply(bot, message.chat.id, search('location', location)) if message.location
+        else
+          if search('country').include? message.text.capitalize
+            reply(bot, message.chat.id, search(message.text))
+          else
+            reply(bot, message.chat.id, "I can't help you, please select from the following options:", main_menu)
+          end
+        end
 
       when Telegram::Bot::Types::CallbackQuery
         case message.data
@@ -67,38 +72,18 @@ class Bot
 
     case command
     when '/start'
-      content_hash = covid_api.summary
-      text_output = ''
-      content_hash.each do |key, value|
-        value = value.to_s.reverse.scan(/\d{1,3}/).join(',').reverse
-        key = key.split(/(?=[A-Z])/).join(' ')
-        text_output += "#{key}: #{value}\n"
-      end
-
-      return text_output
+      return covid_api.summary
 
     when 'country'
       return covid_api.countries.join(', ')
 
     when 'location'
       if location
-        country = covid_api.country(location.first.country)
-        text_output = ''
-        country.each do |key, value|
-          value = value.to_s.reverse.scan(/\d{1,3}/).join(',').reverse unless key == 'Country'
-          value = value
-          key = key.split(/(?=[A-Z])/).join(' ')
-          text_output += "#{key}: #{value}\n"
-        end
-      else
-        text_output = "Unable to find location"
+        return covid_api.country(location.first.country)
       end
-      return text_output
-
     else
-      'No answer'
+      covid_api.country(command)
     end
-
   end
 
   # Provides the user with the current options
