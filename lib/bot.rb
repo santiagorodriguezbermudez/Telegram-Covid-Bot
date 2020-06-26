@@ -82,7 +82,7 @@ class Bot
 
     when 'location'
       if location
-        return covid_api.country(location.first.country.downcase)
+        return covid_api.country(covid_api.get_slug_country(location.first.country))
       end
     else
       covid_api.country(command)

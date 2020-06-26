@@ -9,10 +9,9 @@ describe Bot do
 
 
   describe '#search' do 
-  
+
     it 'Returns a succesful search given a location' do
       location = Geocoder.search('Saudi Arabia')
-      p location
       expect(bot.search('location', location).class).to eql(String)
     end
   end
