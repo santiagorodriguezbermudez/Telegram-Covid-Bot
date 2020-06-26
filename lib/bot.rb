@@ -54,22 +54,21 @@ class Bot
   def listen_message_text(bot, message)
     if message.text == '/start'
       reply(bot, message.chat.id, "Hello, #{message.from.first_name}.")
-      reply(bot, message.chat.id,
-      "This is the latest update on Covid for #{Date.today.strftime('%a, %-d %b of %Y:')}")
+      reply(bot,
+            message.chat.id,
+            "This is the latest update on Covid for #{Date.today.strftime('%a, %-d %b of %Y:')}")
       reply(bot, message.chat.id, search('/start'))
       reply(bot, message.chat.id, 'Please select one of the following options', main_menu)
-    
-    elsif message.text == nil
+
+    elsif message.text.nil?
       # Provides stats according to the country if given a location.
-      location = Geocoder.search([message.location.latitude, message.location.longitude]) 
+      location = Geocoder.search([message.location.latitude, message.location.longitude])
       reply(bot, message.chat.id, search('location', location))
 
+    elsif search('countries').include? message.text.downcase
+      reply(bot, message.chat.id, search(message.text))
     else
-      if search('countries').include? message.text.downcase
-        reply(bot, message.chat.id, search(message.text))
-      else
-        reply(bot, message.chat.id, "I can't help you, please select from the following options:", main_menu)
-      end
+      reply(bot, message.chat.id, "I can't help you, please select from the following options:", main_menu)
     end
   end
 
@@ -86,7 +85,7 @@ class Bot
 
     when 'location'
       covid_api.country(covid_api.get_slug_country(location.first.country)) if location
-      
+
     else
       covid_api.country(command)
     end
@@ -96,9 +95,8 @@ class Bot
   def main_menu
     kb = [
       Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Latest news on Covid', url: 'https://news.google.com/covid19/map?hl=en-US&gl=US&ceid=US:en'),
-      Telegram::Bot::Types::InlineKeyboardButton.new(
-        text: 'What is the situation in my country?',
-        callback_data: 'location'),
+      Telegram::Bot::Types::InlineKeyboardButton.new(text: 'How are the numbers in my location?',
+                                                     callback_data: 'location'),
       Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Select a specific country', callback_data: 'countries')
     ]
     Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb)
@@ -108,9 +106,10 @@ class Bot
   def inline_menu
     kb = [
       Telegram::Bot::Types::KeyboardButton.new(
-       text: 'Provide Covid my Location',
-       request_location: true,
-       one_time_keyboard: true)
+        text: 'Provide Covid my Location',
+        request_location: true,
+        one_time_keyboard: true
+      )
     ]
     Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: kb)
   end
