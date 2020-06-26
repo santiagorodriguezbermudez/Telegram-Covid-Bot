@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 
-gem 'rubocop'
+gem 'dotenv'
+gem 'geocoder'
 gem 'rspec'
+gem 'rubocop'
 gem 'telegram-bot-ruby'
 gem 'uri'
-gem 'geocoder'
-gem 'dotenv'

@@ -5,7 +5,7 @@ describe Bot do
 
   describe '#initialize' do
     it 'Starts the Bot without error' do
-      expect(bot.class).to eql (Bot)
+      expect(bot.class).to eql Bot
     end
   end
 end

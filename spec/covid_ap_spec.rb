@@ -11,7 +11,7 @@ describe CovidApi do
       array.each do |el|
         p el
         text_output = api.country(el)
-        expect(text_output.include? 'has no data on Api').to eql(false)
+        expect((text_output.include? 'has no data on Api')).to eql(false)
       end
     end
 

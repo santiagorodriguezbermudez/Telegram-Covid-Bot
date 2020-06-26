@@ -1,5 +1,5 @@
-require "uri"
-require "net/http"
+require 'uri'
+require 'net/http'
 require 'json'
 
 class CovidApi
@@ -7,8 +7,6 @@ class CovidApi
   def initialize
     @url = 'https://api.covid19api.com/'
   end
-
-  public
 
   def summary
     organize_output(get_information('summary') { |hash| hash['Global'] })
@@ -21,7 +19,7 @@ class CovidApi
   end
 
   def country(country)
-    country_hash = get_information('total/country/' + country) { |array| array[(array.length) - 1] } if country.ascii_only?
+    country_hash = get_information('total/country/' + country) { |arr| arr[arr.length - 1] } if country.ascii_only?
     if country == 'Error'
       'There is no data for this location available, try using the slug name.'
     elsif country_hash
@@ -29,6 +27,7 @@ class CovidApi
       text_output = "Country: #{selected_country_fields['Country']}\n"
       selected_country_fields = selected_country_fields.select { |k, v| (k != 'Country') }
       text_output += organize_output(selected_country_fields)
+      text_output
     else
       organize_output(country.split('-').join(' ').capitalize + ' has no data on Api')
     end
@@ -49,7 +48,7 @@ class CovidApi
 
   def get_information(path)
     url_path = URI(@url + path)
-    https = Net::HTTP.new(url_path.host, url_path.port);
+    https = Net::HTTP.new(url_path.host, url_path.port)
     https.use_ssl = true
 
     request = Net::HTTP::Get.new(url_path)
