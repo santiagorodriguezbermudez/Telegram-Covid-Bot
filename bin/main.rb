@@ -3,5 +3,5 @@ require 'dotenv'
 require_relative '../lib/bot.rb'
 
 Dotenv.load
-Bot.new
 
+Bot.new

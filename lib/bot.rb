@@ -5,31 +5,32 @@ require_relative 'covid_api'
 class Bot
   attr_reader :commands, :token
 
-  def initialize 
-    @token = ENV['token']
-    begin 
+  def initialize
+    @token = ENV['TOKEN']
+    begin
       start_telegram_api
     rescue Telegram::Bot::Exceptions::ResponseError => e
-      puts 'Bot not connecting properly' if e.error_code.to_s == '404'
+      puts "Bot not connecting properly. Presenting: #{e}"
     end
   end
 
   public
+
   # Replies messages to the user
-  def reply(bot, chat_id, content, markup = nil )
+  def reply(bot, chat_id, content, markup = nil)
     bot.api.send_message(chat_id: chat_id, text: content, reply_markup: markup)
   end
-  
+
   private
 
-  # Starts the bot input. 
+  # Starts the bot input.
   def start_telegram_api
     Telegram::Bot::Client.run(self.token) do |bot|
       listen(bot)
     end
   end
 
-  #Listens for user input
+  # Listens for user input
   def listen(bot)
     bot.listen do |message|
       case message
@@ -43,7 +44,7 @@ class Bot
           reply(bot, message.chat.id, 'Please select one of the following options', main_menu)
 
         when nil
-          # Provides stats according to the country if given a location. 
+          # Provides stats according to the country if given a location.
           location = Geocoder.search([message.location.latitude, message.location.longitude]) if message.location
           reply(bot, message.chat.id, search('location', location)) if message.location
 
