@@ -33,30 +33,7 @@ class Bot
     bot.listen do |message|
       case message
       when Telegram::Bot::Types::Message
-
-        case message.text
-        when '/start'
-          reply(bot, message.chat.id, "Hello, #{message.from.first_name}.")
-          reply(bot, message.chat.id, 
-          "This is the latest update on Covid for #{Date.today.strftime('%a, %-d %b of %Y:')}")
-          reply(bot, message.chat.id, search('/start'))
-          reply(bot, message.chat.id, 'Please select one of the following options', main_menu)
-
-        when nil
-          # Provides stats according to the country if given a location.
-          location = Geocoder.search([message.location.latitude, message.location.longitude]) if message.location
-          reply(bot, message.chat.id, search('location', location)) if message.location
-
-        when '/stop'
-          reply(bot, message.chat.id, "Bye, #{message.from.first_name}.")
-
-        else
-          if search('countries').include? message.text.downcase
-            reply(bot, message.chat.id, search(message.text))
-          else
-            reply(bot, message.chat.id, "I can't help you, please select from the following options:", main_menu)
-          end
-        end
+        listen_message_text(bot, message)
 
       when Telegram::Bot::Types::CallbackQuery
         case message.data
@@ -70,6 +47,28 @@ class Bot
         else
           reply(bot, message.from.id, "I don't know how to help you with this")
         end
+      end
+    end
+  end
+
+  def listen_message_text(bot, message)
+    if message.text == '/start'
+      reply(bot, message.chat.id, "Hello, #{message.from.first_name}.")
+      reply(bot, message.chat.id,
+      "This is the latest update on Covid for #{Date.today.strftime('%a, %-d %b of %Y:')}")
+      reply(bot, message.chat.id, search('/start'))
+      reply(bot, message.chat.id, 'Please select one of the following options', main_menu)
+    
+    elsif message.text == nil
+      # Provides stats according to the country if given a location.
+      location = Geocoder.search([message.location.latitude, message.location.longitude]) 
+      reply(bot, message.chat.id, search('location', location))
+
+    else
+      if search('countries').include? message.text.downcase
+        reply(bot, message.chat.id, search(message.text))
+      else
+        reply(bot, message.chat.id, "I can't help you, please select from the following options:", main_menu)
       end
     end
   end
