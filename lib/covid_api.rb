@@ -25,15 +25,6 @@ class CovidApi
     selected_country = country_array.select {|object| object['Country'] == country}
     selected_country_fields = selected_country[0].select {|k, v| (k != "Date" && k != "CountryCode" && k != "Slug")}
     selected_country_fields
-    # selected_country_fields = {}
-    # selected_country_fields[:NewConfirmed] = selected_country[0]["NewConfirmed"]
-    # selected_country_fields[:TotalConfirmed] = selected_country[0]["TotalConfirmed"]
-    # selected_country_fields[:NewDeaths] = selected_country[0]["NewDeaths"]
-    # selected_country_fields[:TotalDeaths] = selected_country[0]["TotalDeaths"]
-    # selected_country_fields[:NewRecovered] = selected_country[0]["NewRecovered"]
-    # selected_country_fields[:TotalRecovered] = selected_country[0]["TotalRecovered"]
-    # selected_country_fields[:Date] = selected_country[0]["Date"]
-    # selected_country_fields
   end
 
 
@@ -50,19 +41,5 @@ class CovidApi
 
     yield(summary_hash)
   end
-
-  # def get_commands(input_url)
-  #   url = input_url
-  #   https = Net::HTTP.new(url.host, url.port);
-  #   https.use_ssl = true
-
-  #   request = Net::HTTP::Get.new(url)
-
-  #   response = https.request(request)
-  #   response.read_body.each {|msg| }
-
-  #   #Get only the commands that the user wants
-  #   filter_hash =  response.read_body.select {|key, value| }
-  # end
 
 end
