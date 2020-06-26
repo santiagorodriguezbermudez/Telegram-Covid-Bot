@@ -37,6 +37,9 @@ class Bot
           location = Geocoder.search([message.location.latitude, message.location.longitude]) if message.location
           reply(bot, message.chat.id, search('location', location)) if message.location
 
+        when '/stop'
+          reply(bot, message.chat.id, "Bye, #{message.from.first_name}.")
+
         else
           if search('country').include? message.text.capitalize
             reply(bot, message.chat.id, search(message.text))
