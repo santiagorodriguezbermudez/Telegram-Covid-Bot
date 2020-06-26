@@ -17,21 +17,16 @@ class CovidApi
   def countries
     country_array = get_information('summary') {|hash| hash['Countries']}
     country_array.map!{|el| el['Slug']}
-    country_array.sort  
-  
-    
-    # country_array_slug = country_array.map { |el| el }
-    # country_array = get_information('countries') {|array| array.map {|el| el['Slug']}}
-    # country_database_array = get_information('summary') {|hash| hash['Countries']}
-    # country_array_filtered = country_array.select{|el| el if country_database_array.any?{|country_object| country_object['Slug'] == el}}
-    # country_array_filtered = country_array_filtered.map{|el| el unless el == nil }
-    # country_array_filtered.sort
+    country_array.sort 
   end
 
   def country(country)
+    p country
     country_hash = get_information('total/country/' + country) {|array| array[(array.length)-1]} if country.ascii_only?
-
-    if country_hash
+    p country_hash
+    if country == 'Error'
+      'There is no data for this location available, try using the slug name.'
+    elsif country_hash
       selected_country_fields = country_hash.select {|k, v| (k == 'Confirmed' || k == 'Country' || k == 'Deaths' || k == 'Recovered' || k == 'Active')}
       text_output = "Country: #{selected_country_fields['Country']}\n"
       selected_country_fields = selected_country_fields.select {|k, v| (k != 'Country')}
@@ -45,7 +40,11 @@ class CovidApi
     country_array = get_information('summary') {|hash| hash['Countries']}
     country_array_with_slug = country_array.map{|country_hash| country_hash.select {|k, v| k == 'Country' || k == 'Slug'}}
     index = country_array_with_slug.find_index {|el| el['Country'].downcase == input_country.downcase}
-    country_array[index]['Slug']
+    if index 
+      country_array[index]['Slug']
+    else 
+      'Error'
+    end
   
   end
 

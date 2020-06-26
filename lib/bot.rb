@@ -41,7 +41,7 @@ class Bot
           reply(bot, message.chat.id, "Bye, #{message.from.first_name}.")
 
         else
-          if search('country').include? message.text.downcase
+          if search('countries').include? message.text.downcase
             reply(bot, message.chat.id, search(message.text))
           else
             reply(bot, message.chat.id, "I can't help you, please select from the following options:", main_menu)
@@ -53,9 +53,9 @@ class Bot
         when 'location'
           reply(bot, message.from.id, 'Please provide me your location...', inline_menu)
 
-        when 'country'
+        when 'countries'
           reply(bot, message.from.id, 'Please type one of the following countries to get information:')
-          reply(bot, message.from.id, search('country'))
+          reply(bot, message.from.id, search('countries'))
 
         else
           reply(bot, message.from.id, "I don't know how to help you with this")
@@ -77,7 +77,7 @@ class Bot
     when '/start'
       return covid_api.summary
 
-    when 'country'
+    when 'countries'
       return covid_api.countries.join(', ')
 
     when 'location'
@@ -94,7 +94,7 @@ class Bot
     kb = [
       Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Latest news on Covid', url: 'https://news.google.com/covid19/map?hl=en-US&gl=US&ceid=US:en'),
       Telegram::Bot::Types::InlineKeyboardButton.new(text: 'What is the situation in my country?', callback_data: 'location'),
-      Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Select a specific country', callback_data: 'country')
+      Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Select a specific country', callback_data: 'countries')
     ]
     Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb)
   end
