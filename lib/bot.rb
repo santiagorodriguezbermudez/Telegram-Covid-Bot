@@ -7,9 +7,19 @@ class Bot
 
   def initialize 
     @token = ENV['token']
-    start_telegram_api
+    begin 
+      start_telegram_api
+    rescue Telegram::Bot::Exceptions::ResponseError => e
+      puts 'Bot not connecting properly' if e.error_code.to_s == '404'
+    end
   end
 
+  public
+  # Replies messages to the user
+  def reply(bot, chat_id, content, markup = nil )
+    bot.api.send_message(chat_id: chat_id, text: content, reply_markup: markup)
+  end
+  
   private
 
   # Starts the bot input. 
@@ -62,11 +72,6 @@ class Bot
         end
       end
     end
-  end
-
-  # Replies messages to the user
-  def reply(bot, chat_id, content, markup = nil )
-    bot.api.send_message(chat_id: chat_id, text: content, reply_markup: markup)
   end
 
   # Connects with the Covid API Class
