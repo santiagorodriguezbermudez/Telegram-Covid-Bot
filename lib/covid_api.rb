@@ -17,11 +17,14 @@ class CovidApi
 
   def countries
     country_array = get_information('countries') {|array| array.map {|el| el['Slug']}}
-    country_array.sort
+    country_database_array = get_information('summary') {|hash| hash['Countries']}
+    country_array_filtered = country_array.select{|el| el if country_database_array.any?{|country_object| country_object['Slug'] == el}}
+    country_array_filtered = country_array_filtered.map{|el| el unless el == nil }
+    country_array_filtered.sort
   end
 
   def country(country)
-    country_array = get_information('total/country/' + country) {|array| array[(array.length)-1]}
+    country_array = get_information('total/country/' + country) {|array| array[(array.length)-1]} if country.ascii_only?
     
     if country_array
       selected_country_fields = country_array.select {|k, v| (k == 'Confirmed' || k == 'Country' || k == 'Deaths' || k == 'Recovered' || k == 'Active')}
@@ -29,7 +32,7 @@ class CovidApi
       selected_country_fields = selected_country_fields.select {|k, v| (k != 'Country')}
       text_output += organize_output(selected_country_fields) 
     else
-      organize_output(nil)
+      organize_output(country.split('-').join(' ').capitalize + ' has no data on Api')
     end
   end
 
@@ -49,7 +52,7 @@ class CovidApi
   end
 
   def organize_output(object)
-    return 'Error finding data...' unless object
+    return object if object.is_a?String
     
     text_output = ''
     object.each do |key, value| 
