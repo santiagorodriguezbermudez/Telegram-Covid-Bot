@@ -20,6 +20,7 @@ class CovidApi
 
   def country(country)
     country_hash = get_information('total/country/' + country) { |arr| arr[arr.length - 1] } if country.ascii_only?
+
     if country == 'Error'
       'There is no data for this location available, try using the slug name.'
     elsif country_hash
