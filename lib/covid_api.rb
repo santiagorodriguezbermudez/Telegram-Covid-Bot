@@ -23,10 +23,12 @@ class CovidApi
     if country == 'Error'
       'There is no data for this location available, try using the slug name.'
     elsif country_hash
-      selected_country_fields = country_hash.select { |k, v| (k == 'Confirmed' || k == 'Country' || k == 'Deaths' || k == 'Recovered' || k == 'Active') }
+
+      selected_country_fields = country_hash.select { |k, _| %w[Confirmed Country Deaths Recovered Active].include?(k) }
+
       text_output = "Country: #{selected_country_fields['Country']}\n"
-      selected_country_fields = selected_country_fields.select { |k, v| (k != 'Country') }
-      text_output += organize_output(selected_country_fields)
+
+      text_output += organize_output(selected_country_fields.reject { |k, _| k == 'Country' })
       text_output
     else
       organize_output(country.split('-').join(' ').capitalize + ' has no data on Api')
@@ -35,7 +37,7 @@ class CovidApi
 
   def get_slug_country(input_country)
     country_array = get_information('summary') { |hash| hash['Countries'] }
-    country_array_with_slug = country_array.map { |country_hash| country_hash.select { |k, v| k == 'Country' || k == 'Slug' } }
+    country_array_with_slug = country_array.map { |h| h.select { |k, _| %w[Slug Country].include?(k) } }
     index = country_array_with_slug.find_index { |el| el['Country'].downcase == input_country.downcase }
     if index
       country_array[index]['Slug']
